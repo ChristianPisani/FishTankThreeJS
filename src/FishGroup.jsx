@@ -39,7 +39,7 @@ export function FishGroup(props) {
     const distance = 10;
 
     for (let i = 0; i < 400; i++) {
-        const randomScale = Math.random() * 0.5 + 0.1;
+        const randomScale = Math.random() * 0.75 + 0.2;
 
         fg.push({
                 position: new Vector3(
@@ -74,7 +74,6 @@ export function FishGroup(props) {
             const id = i++;
             const {
                 position,
-                rotation,
                 scale,
                 velocity
             } = fish;
@@ -82,7 +81,6 @@ export function FishGroup(props) {
             tempObject.position.set(position.x, position.y, position.z);
             tempObject.scale.set(scale.x, scale.y, scale.z);
             tempObject.lookAt(position.x - velocity.x, position.y - velocity.y / 2, position.z - velocity.z);
-            
 
             tempObject.updateMatrix();
 

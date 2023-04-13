@@ -40,7 +40,7 @@ export function GoldFish(props) {
             const zPos = positionArray[i + 2];
 
             let pos = new Vector3(xPos, yPos, zPos);
-            pos.x = xPos + (Math.sin(elapsedTime * 5 + zPos * 2) / 100);
+            pos.x = xPos + (Math.sin(elapsedTime * 5 + Math.cos(zPos) * 4) / 50);
             geo.attributes.position.array[i] = pos.x;
             geo.attributes.position.array[i + 1] = pos.y;
             geo.attributes.position.array[i + 2] = pos.z;
