@@ -7,9 +7,10 @@ import {
     Canvas
 } from "@react-three/fiber";
 import {
+    Box,
     Environment,
     OrbitControls, PerspectiveCamera,
-    Plane
+    Plane, RoundedBox
 } from "@react-three/drei";
 import {
     FishGroup
@@ -18,7 +19,7 @@ import {
     Color,
     MeshBasicMaterial,
     MeshLambertMaterial,
-    MeshPhongMaterial,
+    MeshPhongMaterial, MeshPhysicalMaterial,
     MeshStandardMaterial
 } from "three";
 import {
@@ -56,12 +57,13 @@ function App() {
 
                 <FishTank scale={[3.5, 5, 3.5]} position={[0, -10, 0]}></FishTank>
                 <FishGroup scale={[1.2, 1.2, 1.2]}></FishGroup>
-                {<Plane receiveShadow
+                {<RoundedBox receiveShadow
                         castShadow
-                        position={[0, -10, 0]}
-                        args={[25, 25, 1]}
+                             radius={5}
+                        position={[0, -60, 0]}
+                        args={[25, 25, 100]}
                         rotation={[-Math.PI / 2, 0, 0]}
-                        material={new MeshStandardMaterial({color: "orange"})}></Plane>}
+                        material={new MeshPhysicalMaterial({color: "orange", roughness: 0.1, metalness: 0.5})}></RoundedBox>}
                 <PerspectiveCamera position={[100,50,0]}  near={0.01} far={1000} ref={cameraRef} makeDefault></PerspectiveCamera>
                 <OrbitControls target={[0, 3, 0]} camera={cameraRef.current} maxPolarAngle={Math.PI / 2} minDistance={5}
                                maxDistance={50} autoRotate={true} enablePan={false}
