@@ -22,11 +22,11 @@ export class Boid {
         // this.velocity = Vector3.random().multiplyScalar(Math.random() * 0.5);
     }
 
-    maxVelocity = 0.05;
+    maxVelocity = 0.06;
     
     calculateAligment(boids) {
-        const maxDistance = 5;
-        const maxForce = 0.0001;
+        const maxDistance = 0.5;
+        const maxForce = 0.0005;
         const maxSpeed = 2;
         
         let averageVelocity = new Vector3(0,0,0);
@@ -58,8 +58,8 @@ export class Boid {
 
     calculateSeparation(boids) {
         const maxDistance = 5;
-        const maxForce = 0.0005;
-        const maxSpeed = 5;
+        const maxForce = 0.0004;
+        const maxSpeed = 6;
         
         let averagePosition = new Vector3(0,0,0);
         let total = 0;
@@ -89,8 +89,8 @@ export class Boid {
 
     calculateCohesion(boids) {
         const maxDistance = 5;
-        const maxForce = 0.0003;
-        const maxSpeed = 2;
+        const maxForce = 0.0001;
+        const maxSpeed = 0.1;
         
         let averagePosition = new Vector3(0,0,0);
         let total = 0;
