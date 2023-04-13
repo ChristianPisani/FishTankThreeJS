@@ -44,7 +44,7 @@ export function FishGroup(props) {
         fg.push({
                 position: new Vector3(
                     Math.random() * distance - distance / 2,
-                    Math.random() * distance + 20,
+                    Math.random() * distance,
                     Math.random() * distance - distance / 2
                 ),
                 rotation: new Vector3(

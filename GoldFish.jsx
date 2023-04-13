@@ -28,6 +28,8 @@ export function GoldFish(props) {
     } = useGLTF('/Goldfish.glb')
 
     const meshes = useRef([]);
+    
+    Object.keys(materials).forEach(mKey => materials[mKey].side = THREE.DoubleSide);
 
     const animateSwim = (geo, elapsedTime) => {
         const positionArray = geo.attributes.position.array;
@@ -38,7 +40,7 @@ export function GoldFish(props) {
             const zPos = positionArray[i + 2];
 
             let pos = new Vector3(xPos, yPos, zPos);
-            pos.x = xPos + (Math.sin(elapsedTime * 5 + zPos * 2) / 200);
+            pos.x = xPos + (Math.sin(elapsedTime * 5 + zPos * 2) / 100);
             geo.attributes.position.array[i] = pos.x;
             geo.attributes.position.array[i + 1] = pos.y;
             geo.attributes.position.array[i + 2] = pos.z;
