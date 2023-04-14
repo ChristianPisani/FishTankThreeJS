@@ -24,19 +24,36 @@ export class Boid {
 
     maxVelocity = 0.06;
     
-    calculateAligment(boids) {
-        const maxDistance = 0.5;
-        const maxForce = 0.0005;
-        const maxSpeed = 2;
+    calculateFlocking(boids) {
+        const maxDistance = 5;
+        const maxForceAlignment = 0.0001;
+        const maxForceSeparation = 0.0004;
+        const maxForceCohesion = 0.0003;
+        const maxSpeedAlignment = 2;
+        const maxSpeedSeparation = 6;
+        const maxSpeedCohesion = 0.1;
         
         let averageVelocity = new Vector3(0,0,0);
+        let averagePositionSeparation = new Vector3(0,0,0);
+        let averagePositionCohesion = new Vector3(0,0,0);
+        
         let total = 0;
         
         for(let other of boids) {
-            if(other === this || other.position.distanceTo(this.position) > maxDistance) continue;
+            const distance = other.position.distanceTo(this.position);
             
-            let otherVelocity = new Vector3(other.velocity.x, other.velocity.y, other.velocity.z);
+            if(other === this || distance > maxDistance) continue;
+            
+            const otherVelocity = new Vector3(other.velocity.x, other.velocity.y, other.velocity.z);
             averageVelocity.add(otherVelocity);
+
+            const differenceSeparation = new Vector3(this.position.x, this.position.y, this.position.z);
+            differenceSeparation.sub(other.position);
+            differenceSeparation.divideScalar(distance * distance)
+            averagePositionSeparation.add(differenceSeparation);
+
+            const otherPosition = new Vector3(other.position.x, other.position.y, other.position.z);
+            averagePositionCohesion.add(otherPosition);
             
             total++;
         }
@@ -45,84 +62,36 @@ export class Boid {
         vectorFromZero.multiplyScalar(-1);
         vectorFromZero.divideScalar(1000);
         averageVelocity.add(vectorFromZero);*/
+        
+        const force = new Vector3(0,0,0);
 
         if(total > 0) {
             averageVelocity.divideScalar(total);
-            averageVelocity.setLength(maxSpeed);
+            averageVelocity.setLength(maxSpeedAlignment);
             averageVelocity.sub(this.velocity);
-            averageVelocity.clampLength(0, maxForce);
+            averageVelocity.clampLength(0, maxForceAlignment);
+
+            averagePositionSeparation.divideScalar(total);
+            averagePositionSeparation.setLength(maxSpeedSeparation);
+            averagePositionSeparation.sub(this.position);
+            averagePositionSeparation.clampLength(0, maxForceSeparation);
+
+            averagePositionCohesion.divideScalar(total);
+            averagePositionCohesion.setLength(maxSpeedCohesion);
+            averagePositionCohesion.sub(this.position);
+            averagePositionCohesion.clampLength(0, maxForceCohesion);
+            
+            force.add(averageVelocity);
+            force.add(averagePositionSeparation);
+            force.add(averagePositionCohesion);
         }
         
-        return averageVelocity;
-    }
-
-    calculateSeparation(boids) {
-        const maxDistance = 5;
-        const maxForce = 0.0004;
-        const maxSpeed = 6;
-        
-        let averagePosition = new Vector3(0,0,0);
-        let total = 0;
-
-        for(let other of boids) {
-            const distance = other.position.distanceTo(this.position);
-            
-            if(other === this || distance > maxDistance) continue;
-            
-            const difference = new Vector3(this.position.x, this.position.y, this.position.z);
-            difference.sub(other.position);
-            difference.divideScalar(distance * distance)
-            averagePosition.add(difference);
-            
-            total++;
-        }
-
-        if(total > 0) {
-            averagePosition.divideScalar(total);
-            averagePosition.setLength(maxSpeed);
-            averagePosition.sub(this.position);
-            averagePosition.clampLength(0, maxForce);
-        }
-
-        return averagePosition;
-    }
-
-    calculateCohesion(boids) {
-        const maxDistance = 5;
-        const maxForce = 0.0001;
-        const maxSpeed = 0.1;
-        
-        let averagePosition = new Vector3(0,0,0);
-        let total = 0;
-
-        for(let other of boids) {
-            if(other === this || other.position.distanceTo(this.position) > maxDistance) continue;
-
-            let otherPosition = new Vector3(other.position.x, other.position.y, other.position.z);
-            averagePosition.add(otherPosition);
-            
-            total++;
-        }
-
-        if(total > 0) {
-            averagePosition.divideScalar(total);
-            averagePosition.setLength(maxSpeed);
-            averagePosition.sub(this.position);
-            averagePosition.clampLength(0, maxForce);
-        }
-
-        return averagePosition;
+        return force;
     }
     
     flock(boids) {
-        const alignment = this.calculateAligment(boids);
-        this.acceleration.add(alignment);
-
-        const cohesion = this.calculateCohesion(boids);
-        this.acceleration.add(cohesion);
-
-        const separation = this.calculateSeparation(boids);
-        this.acceleration.add(separation);
+        const flockingForce = this.calculateFlocking(boids);
+        this.acceleration.add(flockingForce);
     }
     
     update() {

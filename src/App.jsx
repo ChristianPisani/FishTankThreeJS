@@ -28,6 +28,9 @@ import {
 import {
     FishBowl
 } from "../FishBowl.jsx";
+import {
+    Table
+} from "../Table.jsx";
 
 function App() {
     const cameraRef = useRef();
@@ -58,15 +61,16 @@ function App() {
                     preset={"apartment"}
                 />
 
-                <FishBowl scale={[6, 7.5, 6]} position={[0, -18, 0]}></FishBowl>
+                <FishBowl scale={[6, 6, 6]} position={[0, -18, 0]}></FishBowl>
                 <FishGroup scale={[1.2, 1.2, 1.2]}></FishGroup>
-                {<RoundedBox receiveShadow
+                <Table scale={[5,5,5]} position={[0,-18,-7]}></Table>
+                {/*<RoundedBox receiveShadow
                         castShadow
                              radius={5}
                         position={[0, -67, 0]}
                         args={[35, 35, 100]}
                         rotation={[-Math.PI / 2, 0, 0]}
-                        material={new MeshPhysicalMaterial({color: "orange", roughness: 0.1, metalness: 0.5})}></RoundedBox>}
+                        material={new MeshPhysicalMaterial({color: "orange", roughness: 0.1, metalness: 0.5})}></RoundedBox>*/}
                 <PerspectiveCamera position={[100,50,0]}  near={0.01} far={1000} ref={cameraRef} makeDefault></PerspectiveCamera>
                 <OrbitControls target={[0, 3, 0]} camera={cameraRef.current} maxPolarAngle={Math.PI / 2} minDistance={5}
                                maxDistance={70} autoRotate={true} enablePan={false}
