@@ -11,8 +11,8 @@ export function FishBowl(props) {
   return (
     <group {...props} dispose={null}>
       <group scale={0.99}>
-        <mesh receiveShadow castShadow geometry={nodes.Sphere005.geometry} material={materials.Water} />
-        <mesh receiveShadow castShadow geometry={nodes.Sphere005_1.geometry} material={materials['Material.005']} />
+        <mesh receiveShadow geometry={nodes.Sphere005.geometry} material={materials.Water} />
+        <mesh receiveShadow geometry={nodes.Sphere005_1.geometry} material={materials['Material.005']} />
         <mesh receiveShadow castShadow geometry={nodes.Sphere005_2.geometry} material={materials.Sand} />
       </group>
     </group>

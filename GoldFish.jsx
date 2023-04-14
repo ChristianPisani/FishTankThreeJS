@@ -4,6 +4,7 @@ Command: npx gltfjsx@6.1.4 .\\public\\Goldfish.glb
 */
 
 import React, {
+    useEffect,
     useRef,
     useState
 } from 'react'
@@ -21,18 +22,25 @@ import {
 import node
     from "three/addons/nodes/core/Node.js";
 
+let meshes = [];
+const originalPositions = {};
+
 export function GoldFish(props) {
     const {
         nodes,
         materials
     } = useGLTF('/Goldfish.glb')
+    const {
+        nodesCopy
+    } = useGLTF('/Goldfish.glb')
 
-    const meshes = useRef([]);
     
     Object.keys(materials).forEach(mKey => materials[mKey].side = THREE.DoubleSide);
 
-    const animateSwim = (geo, elapsedTime) => {
-        const positionArray = geo.attributes.position.array;
+    const animateSwim = (geo, index, elapsedTime) => {
+        if(!originalPositions[index]) return;
+        
+        const positionArray = originalPositions[index];
 
         for (let i = 0; i < positionArray.length; i += 3) {
             const xPos = positionArray[i];
@@ -40,32 +48,44 @@ export function GoldFish(props) {
             const zPos = positionArray[i + 2];
 
             let pos = new Vector3(xPos, yPos, zPos);
-            pos.x = xPos + (Math.sin(elapsedTime * 5 + Math.cos(zPos) * 4) / 100);
+            pos.x = xPos + (Math.sin(elapsedTime * 6 + Math.sin(zPos) * 5) / 20);
             geo.attributes.position.array[i] = pos.x;
             geo.attributes.position.array[i + 1] = pos.y;
             geo.attributes.position.array[i + 2] = pos.z;
         }
 
         geo.attributes.position.needsUpdate = true;
-        
+
         return geo;
     }
 
-    meshes.current = Object.keys(nodes)
-        .filter(nodeKey => nodes[nodeKey].type === "Mesh")
-        .map(nodeKey => {
-            let geo = nodes[nodeKey].geometry;
+    if (!meshes || meshes.length === 0) {
+        meshes = Object.keys(nodes)
+            .filter(nodeKey => nodes[nodeKey].type === "Mesh")
+            .map((nodeKey, index) => {
+                let geo = nodes[nodeKey].geometry;
 
-            geo = animateSwim(geo, 1);
-            
-            return geo;
-        });
+                originalPositions[index] = [];
+
+                for (let i = 0; i < geo.attributes.position.array.length; i += 3) {
+                    const xPos = geo.attributes.position.array[i];
+                    const yPos = geo.attributes.position.array[i + 1];
+                    const zPos = geo.attributes.position.array[i + 2];
+
+                    originalPositions[index][i] = xPos;
+                    originalPositions[index][i + 1] = yPos;
+                    originalPositions[index][i + 2] = zPos;
+                }
+
+                return geo;
+            });
+    }
 
 
-    useFrame(({ clock }) => {
+    useFrame(({clock}) => {
         const elapsedTime = clock.getElapsedTime();
-        
-        meshes.current = meshes.current.map(geo => animateSwim(geo, elapsedTime));
+
+        meshes = meshes.map((geo, index) => animateSwim(geo, index, elapsedTime));
     })
 
     return (
@@ -76,35 +96,35 @@ export function GoldFish(props) {
                 receiveShadow
                 ref={props.fishRef[0]}
                 args={[null, null, props.amount ?? 1]}
-                geometry={meshes.current[0]}
+                geometry={meshes[0]}
                 material={materials['Material.003']}/>
             <instancedMesh
                 castShadow
                 receiveShadow
                 ref={props.fishRef[1]}
                 args={[null, null, props.amount ?? 1]}
-                geometry={meshes.current[1]}
+                geometry={meshes[1]}
                 material={materials['Material.002']}/>
             <instancedMesh
                 castShadow
                 receiveShadow
                 ref={props.fishRef[2]}
                 args={[null, null, props.amount ?? 1]}
-                geometry={meshes.current[2]}
+                geometry={meshes[2]}
                 material={materials['Material.001']}/>
             <instancedMesh
                 castShadow
                 receiveShadow
                 ref={props.fishRef[3]}
                 args={[null, null, props.amount ?? 1]}
-                geometry={meshes.current[3]}
+                geometry={meshes[3]}
                 material={materials['Material.004']}/>
             <instancedMesh
                 castShadow
                 receiveShadow
                 ref={props.fishRef[4]}
                 args={[null, null, props.amount ?? 1]}
-                geometry={meshes.current[4]}
+                geometry={meshes[4]}
                 material={materials.Material}/>
         </group>
     )

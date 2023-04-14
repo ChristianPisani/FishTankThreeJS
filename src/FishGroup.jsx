@@ -5,12 +5,10 @@ Command: npx gltfjsx@6.1.4 .\\CornPlant.glb
 
 import React, {
     useEffect,
-    useRef,
-    useState
+    useRef
 } from 'react'
 import {
-    Object3D,
-    Vector3
+    Object3D
 } from "three";
 import {
     GoldFish
@@ -23,7 +21,6 @@ import {
     Flock
 } from "./Flock.js";
 
-
 export function FishGroup(props) {
     const fishRef = useRef();
     const fishRef1 = useRef();
@@ -31,41 +28,29 @@ export function FishGroup(props) {
     const fishRef3 = useRef();
     const fishRef4 = useRef();
     const tempObject = new Object3D();
+    
+    const {
+        alignment,
+        cohesion,
+        separation,
+        maxDistance,
+        amount,
+        reset
+    } = props;
 
-    const flock = useRef(new Flock());
+    const flock = useRef(new Flock(amount));
 
-    const fg = [];
-
-    const distance = 10;
-
-    for (let i = 0; i < 400; i++) {
-        const randomScale = Math.random() * 0.75 + 0.2;
-
-        fg.push({
-                position: new Vector3(
-                    Math.random() * distance - distance / 2,
-                    Math.random() * distance,
-                    Math.random() * distance - distance / 2
-                ),
-                rotation: new Vector3(
-                    Math.random() * 0.5,
-                    Math.random() * 360,
-                    Math.random() * 0.5
-                ),
-                scale: new Vector3(randomScale, randomScale, randomScale)
-            }
-        );
-    }
-
-    flock.current.boids = fg.map(fish => {
-        const boid = new Boid();
-        boid.position = fish.position;
-        boid.scale = fish.scale;
-        boid.rotation = fish.rotation;
-
-        return boid;
-    });
-
+    useEffect(() => {
+        flock.current.maxSpeedAlignment = alignment;
+        flock.current.maxSpeedCohesion = cohesion;
+        flock.current.maxSpeedSeparation = separation;
+        flock.current.maxDistance = maxDistance;
+    }, [alignment, cohesion, separation, maxDistance])
+    
+    useEffect(() => {
+        flock.current = new Flock(amount);
+    }, [amount, reset])
+    
     const updateFishPositions = () => {
         if (fishRef?.current == null) return;
 
