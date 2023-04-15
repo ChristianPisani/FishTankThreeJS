@@ -1,4 +1,5 @@
 import {
+    useEffect,
     useRef,
     useState
 } from 'react'
@@ -18,17 +19,6 @@ import {
     FishGroup
 } from "./FishGroup.jsx";
 import {
-    Color,
-    MeshBasicMaterial,
-    MeshLambertMaterial,
-    MeshPhongMaterial,
-    MeshPhysicalMaterial,
-    MeshStandardMaterial
-} from "three";
-import {
-    FishTank
-} from "../FishTank.jsx";
-import {
     FishBowl
 } from "../FishBowl.jsx";
 import {
@@ -40,9 +30,51 @@ import {
 import {
     Chest
 } from "../Chest.jsx";
+import {
+    EffectComposer,
+    GodRays
+} from "@react-three/postprocessing";
+import {
+    BlendFunction,
+    KernelSize,
+    Resolution as Resizer
+} from "postprocessing";
+import {
+    BoxGeometry,
+    CylinderGeometry,
+    Mesh,
+    MeshBasicMaterial,
+    SphereGeometry
+} from "three";
+import {
+    OSphereGeometry
+} from "three/addons/libs/OimoPhysics/index.js";
+import {
+    Boat
+} from "../Boat.jsx";
+
 
 function App() {
     const cameraRef = useRef();
+
+    const goldLightMesh = new Mesh(
+        new CylinderGeometry(0.6, 0.6, 3, 20),
+        new MeshBasicMaterial({
+            color: "#CC8C39",
+            transparent: true,
+            opacity: 0.5,
+        })
+    );
+
+    const sunMesh = new Mesh(
+        new SphereGeometry(0.5, 0.5, 3, 20),
+        new MeshBasicMaterial({
+            color: "#CC8C39",
+            transparent: true,
+            opacity: 1,
+        })
+    );
+
     const shadowCameraBounds = 40;
 
     const [separation, setSeparation] = useState(20);
@@ -58,7 +90,10 @@ function App() {
             className="App">
             <div
                 className={`controls ${controlsOpen ? "" : "closed"}`}>
-                <button onClick={() => setControlsOpen(!controlsOpen)} className={"toggleButton"} type={"button"}></button>
+                <button
+                    onClick={() => setControlsOpen(!controlsOpen)}
+                    className={"toggleButton"}
+                    type={"button"}></button>
                 <label
                     htmlFor={"input-cohesion"}>Cohesion
                                                ({cohesion}): </label>
@@ -119,7 +154,7 @@ function App() {
                     onClick={() => setReset(!reset)}>Reset
                 </button>
             </div>
-            
+
             <Canvas
                 className={"threeCanvas"}
                 shadows={"soft"}
@@ -143,20 +178,51 @@ function App() {
                     preset={"sunset"}
                 />
 
+                <primitive
+                    object={goldLightMesh}
+                    position={[0, -10, 0]}
+                    rotation={[Math.PI / 2, 0, 0]}/>
+                <primitive
+                    object={sunMesh}
+                    position={[85, 5, 50]}
+                    rotation={[Math.PI / 2, 0, 0]}/>
+
                 <FishBowl
                     scale={[6, 6, 6]}
                     position={[0, -18, 0]}></FishBowl>
-                <SeaWeed scale={[3,4.3,3]} position={[6,-16.7,0]} rotation={[0,3,0]}></SeaWeed>
-                <SeaWeed scale={[4,4,4]} position={[10,-18.5,6]}></SeaWeed>
-                <SeaWeed scale={[4,4.5,4]} position={[-15,-19.5,-10]}></SeaWeed>
-                <SeaWeed scale={[4,4.5,4]} position={[-12,-19.5,-11]}></SeaWeed>
-                <SeaWeed scale={[4,4.5,4]} position={[-15,-17,-0]} rotation={[-0.1,1.3,0]}></SeaWeed>
-                <SeaWeed scale={[4,4.5,4]} position={[-0,-19.5,-10]} rotation={[0.1,1.4,0]}></SeaWeed>
-                <SeaWeed scale={[4,4.5,4]} position={[-14,-19.5,-9]} rotation={[0,2,0]}></SeaWeed>
-                <SeaWeed scale={[4,4.5,4]} position={[-5,-19.5,-10]}></SeaWeed>
-                
-                <Chest position={[0,-11.8,0]}></Chest>
-                
+                <SeaWeed
+                    scale={[3, 4.3, 3]}
+                    position={[6, -16.7, 0]}
+                    rotation={[0, 3, 0]}></SeaWeed>
+                <SeaWeed
+                    scale={[4, 4, 4]}
+                    position={[10, -18.5, 6]}></SeaWeed>
+                <SeaWeed
+                    scale={[4, 4.5, 4]}
+                    position={[-15, -19.5, -10]}></SeaWeed>
+                <SeaWeed
+                    scale={[4, 4.5, 4]}
+                    position={[-12, -19.5, -11]}></SeaWeed>
+                <SeaWeed
+                    scale={[4, 4.5, 4]}
+                    position={[-15, -17, -0]}
+                    rotation={[-0.1, 1.3, 0]}></SeaWeed>
+                <SeaWeed
+                    scale={[4, 4.5, 4]}
+                    position={[-0, -19.5, -10]}
+                    rotation={[0.1, 1.4, 0]}></SeaWeed>
+                <SeaWeed
+                    scale={[4, 4.5, 4]}
+                    position={[-14, -19.5, -9]}
+                    rotation={[0, 2, 0]}></SeaWeed>
+                <SeaWeed
+                    scale={[4, 4.5, 4]}
+                    position={[-5, -19.5, -10]}></SeaWeed>
+
+                <Chest
+                    position={[0, -11.8, 0]}></Chest>
+                <Boat position={[-2,20.55,2]} rotation={[0,0.5,0]} scale={[0.5,0.5,0.5]}></Boat>
+
                 <FishGroup
                     reset={reset}
                     amount={amountOfFish}
@@ -168,13 +234,7 @@ function App() {
                 <Table
                     scale={[8, 8, 8]}
                     position={[0, -19, -7]}></Table>
-                {/*<RoundedBox receiveShadow
-                        castShadow
-                             radius={5}
-                        position={[0, -67, 0]}
-                        args={[35, 35, 100]}
-                        rotation={[-Math.PI / 2, 0, 0]}
-                        material={new MeshPhysicalMaterial({color: "orange", roughness: 0.1, metalness: 0.5})}></RoundedBox>*/}
+
                 <PerspectiveCamera
                     position={[100, 50, 0]}
                     near={0.01}
@@ -185,11 +245,43 @@ function App() {
                     target={[0, 3, 0]}
                     camera={cameraRef.current}
                     maxPolarAngle={Math.PI / 2}
+                    minPolarAngle={Math.PI / 4}
                     minDistance={5}
                     maxDistance={100}
                     autoRotate={true}
                     enablePan={false}
                     enableRotate={true}></OrbitControls>
+
+                <EffectComposer>
+                    <GodRays
+                        sun={goldLightMesh}
+                        blendFunction={BlendFunction.SCREEN}
+                        samples={40}
+                        density={0.98}
+                        decay={0.98}
+                        weight={0.6}
+                        exposure={0.3}
+                        clampMax={1}
+                        width={Resizer.AUTO_SIZE}
+                        height={Resizer.AUTO_SIZE}
+                        kernelSize={KernelSize.SMALL}
+                        blur={0.25}
+                    />
+                    <GodRays
+                        sun={sunMesh}
+                        blendFunction={BlendFunction.SCREEN}
+                        samples={40}
+                        density={0.99}
+                        decay={0.99}
+                        weight={0.75}
+                        exposure={0.3}
+                        clampMax={1}
+                        width={Resizer.AUTO_SIZE}
+                        height={Resizer.AUTO_SIZE}
+                        kernelSize={KernelSize.SMALL}
+                        blur={0.25}
+                    />
+                </EffectComposer>
             </Canvas>
         </div>
     )
