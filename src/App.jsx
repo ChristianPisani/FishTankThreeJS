@@ -37,6 +37,9 @@ import {
 import {
     SeaWeed
 } from "../SeaWeed.jsx";
+import {
+    Chest
+} from "../Chest.jsx";
 
 function App() {
     const cameraRef = useRef();
@@ -151,6 +154,9 @@ function App() {
                 <SeaWeed scale={[4,4.5,4]} position={[-0,-19.5,-10]} rotation={[0.1,1.4,0]}></SeaWeed>
                 <SeaWeed scale={[4,4.5,4]} position={[-14,-19.5,-9]} rotation={[0,2,0]}></SeaWeed>
                 <SeaWeed scale={[4,4.5,4]} position={[-5,-19.5,-10]}></SeaWeed>
+                
+                <Chest position={[0,-11.8,0]}></Chest>
+                
                 <FishGroup
                     reset={reset}
                     amount={amountOfFish}
