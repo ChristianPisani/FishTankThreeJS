@@ -267,7 +267,7 @@ function App() {
                         kernelSize={KernelSize.SMALL}
                         blur={0.25}
                     />
-                    <GodRays
+                    {/*<GodRays
                         sun={sunMesh}
                         blendFunction={BlendFunction.SCREEN}
                         samples={40}
@@ -280,7 +280,7 @@ function App() {
                         height={Resizer.AUTO_SIZE}
                         kernelSize={KernelSize.SMALL}
                         blur={0.25}
-                    />
+                    />*/}
                 </EffectComposer>
             </Canvas>
         </div>
