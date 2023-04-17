@@ -12,10 +12,10 @@ import {
 
 
 function App() {
-    const [separation, setSeparation] = useState(20);
-    const [cohesion, setCohesion] = useState(2);
-    const [alignment, setAlignment] = useState(4);
-    const [maxDistance, setMaxDistance] = useState(1);
+    const [separation, setSeparation] = useState(18);
+    const [cohesion, setCohesion] = useState(5);
+    const [alignment, setAlignment] = useState(6);
+    const [maxDistance, setMaxDistance] = useState(2);
     const [amountOfFish, setAmountOfFish] = useState(400);
     const [reset, setReset] = useState(false);
     const [hasPostProcessing, setHasPostProcessing] = useState(true);
