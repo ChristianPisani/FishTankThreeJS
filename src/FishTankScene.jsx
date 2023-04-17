@@ -43,7 +43,7 @@ import {
     SphereGeometry
 } from "three";
 
-export const FishTankScene = ({alignment, cohesion, separation, maxDistance, amountOfFish, reset, hasPostProcessing}) => {
+export const FishTankScene = ({alignment, cohesion, separation, maxDistance, amountOfFish, reset, hasPostProcessing, environment}) => {
     const cameraRef = useRef();
 
     const goldLightMesh = new Mesh(
@@ -87,7 +87,7 @@ export const FishTankScene = ({alignment, cohesion, separation, maxDistance, amo
             <Environment
                 background={true} // can be true, false or "only" (which only sets the background) (default: false)
                 blur={0.25} // blur factor between 0 and 1 (default: 0, only works with three 0.146 and up)
-                preset={"sunset"}
+                preset={environment}
             />
 
             <FishBowl

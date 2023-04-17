@@ -19,7 +19,8 @@ function App() {
     const [amountOfFish, setAmountOfFish] = useState(400);
     const [reset, setReset] = useState(false);
     const [hasPostProcessing, setHasPostProcessing] = useState(true);
-
+    const [environment, setEnvironment] = useState("night");
+    
     return (
         <div
             className="App">
@@ -39,6 +40,8 @@ function App() {
                     setMaxDistance={setMaxDistance}
                     reset={reset}
                     setReset={setReset}
+                    environment={environment}
+                    setEnvironment={setEnvironment}
                 ></Controls>
                 <FishTankScene
                     separation={separation}
@@ -47,7 +50,8 @@ function App() {
                     hasPostProcessing={hasPostProcessing}
                     reset={reset}
                     maxDistance={maxDistance}
-                    amountOfFish={amountOfFish}></FishTankScene>
+                    amountOfFish={amountOfFish}
+                    environment={environment}></FishTankScene>
             </Suspense>
         </div>
     )

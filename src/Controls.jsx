@@ -16,10 +16,12 @@ export const Controls = ({
                              amountOfFish,
                              setAmountOfFish,
                              hasPostProcessing,
-                             setHasPostProcessing
+                             setHasPostProcessing,
+                             environment,
+                             setEnvironment
                          }) => {
     const [open, setOpen] = useState(false);
-    
+
     return (
         <div
             className={`controls ${open ? "" : "closed"}`}>
@@ -82,6 +84,30 @@ export const Controls = ({
                 value={amountOfFish}
                 onChange={(e) => setAmountOfFish(Number(e.target.value))}
                 id={"input-distance"}/>
+            <div>
+                <label
+                    htmlFor={"environment-select"}>Environment: </label>
+                <select
+                    id={"environment-select"}
+                    value={environment}
+                    onChange={(e) => setEnvironment(e.target.value)}>
+                    <option
+                        value={"sunset"}>Sunset
+                    </option>
+                    <option
+                        value={"studio"}>Studio
+                    </option>
+                    <option
+                        value={"forest"}>Forest
+                    </option>
+                    <option value={"dawn"}>Dawn</option>
+                    <option value={"apartment"}>Apartment</option>
+                    <option value={"night"}>Night</option>
+                    <option value={"city"}>City</option>
+                    <option value={"park"}>Park</option>
+                    <option value={"lobby"}>Lobby</option>
+                </select>
+            </div>
             <div>
                 <input
                     id={"post-processing-input"}

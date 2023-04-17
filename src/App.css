@@ -27,6 +27,11 @@
 
   transition: 250ms;
 }
+
+.controls div {
+  margin-bottom: 15px;
+}
+
 .controls.closed {
   background-color: transparent;
   overflow: hidden;
@@ -37,7 +42,7 @@
 }
 
 .controls.closed label {
-  margin-top: 300px;
+  margin-top: 500px;
 }
 
 .controls input {
