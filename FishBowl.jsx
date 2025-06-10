@@ -16,7 +16,7 @@ export function FishBowl(props) {
     opacity: 0.1,
     ior: 1.5,
     roughness: 0,
-    transmission: 0,
+    transmission: 1,
   });
 
   return (
